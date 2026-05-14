@@ -2,6 +2,28 @@
 
 Hyperspectral Polarimetric BRDFs of Real-world Materials
 
+## Download Dataset
+
+The hpBRDF dataset is available on Hugging Face:
+
+https://huggingface.co/datasets/yunseongmoon/Hyperspectral-Polarimetric-BRDF
+
+This repository provides `download_hpbrdf.py` to list and download `.hpbrdf` material files from the dataset. 
+
+List the available material files:
+
+```bash
+python download_hpbrdf.py --list
+```
+
+Download one or more materials by filename or basename:
+
+```bash
+python download_hpbrdf.py --material Aluminum.hpbrdf
+python download_hpbrdf.py --material "Black glass" "Red rough plastic" --output-dir data
+```
+
+
 ## Compiling Mitsuba3 for the hpBRDF Dataset
 
 ### 1. Prepare the Mitsuba3 Source Code
