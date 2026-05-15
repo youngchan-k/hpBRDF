@@ -36,7 +36,7 @@ git clone -b stable --recursive https://github.com/mitsuba-renderer/mitsuba3
 
 ### 2. Replace measured_polarized.cpp
 
-Next, update the `mitsuba3/src/bsdfs/measured_polarized.cpp` file (around line 158) as shown below:
+Next, add `#include <vector>` near the top of `mitsuba3/src/bsdfs/measured_polarized.cpp`, and update the wavelength allocation (around line 158) as shown below:
 
 ```diff
         pbrdf.shape[5] == 4) {
@@ -45,7 +45,7 @@ Next, update the `mitsuba3/src/bsdfs/measured_polarized.cpp` file (around line 1
 
 - ScalarFloat wavelengths[5];
 - for (size_t i = 0; i < 5; ++i) {
-+ ScalarFloat *wavelengths = new ScalarFloat[wvls.shape[0]];
++ std::vector<ScalarFloat> wavelengths(wvls.shape[0]);
 + for (size_t i = 0; i < wvls.shape[0]; ++i) {
     wavelengths[i] = ScalarFloat(((uint16_t *) wvls.data)[i]);
 }

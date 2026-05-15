@@ -8,6 +8,8 @@
 #include <mitsuba/render/texture.h>
 #include <mitsuba/render/microfacet.h>
 
+#include <vector>
+
 /* Set the weight for cosine hemisphere sampling in relation to GGX sampling.
    Set to 1.0 in order to fully fall back to cosine sampling. */
 #define COSINE_HEMISPHERE_PDF_WEIGHT 0.1f
@@ -155,7 +157,7 @@ public:
             Throw("Invalid file structure: %s", tf->to_string());
         }
 
-        ScalarFloat *wavelengths = new ScalarFloat[wvls.shape[0]];
+        std::vector<ScalarFloat> wavelengths(wvls.shape[0]);
         for (size_t i = 0; i < wvls.shape[0]; ++i) {
             wavelengths[i] = ScalarFloat(((uint16_t *) wvls.data)[i]);
         }
@@ -170,9 +172,13 @@ public:
             {{ (const ScalarFloat *) phi_d.data,
                (const ScalarFloat *) theta_d.data,
                (const ScalarFloat *) theta_h.data,
-               (const ScalarFloat *) wavelengths }},
+               wavelengths.data() }},
             false, false
         );
+    }
+
+    void traverse(TraversalCallback *cb) override {
+        cb->put("wavelength", m_wavelength, ParamFlags::NonDifferentiable);
     }
 
     std::pair<BSDFSample3f, Spectrum> sample(const BSDFContext &ctx,
@@ -399,7 +405,7 @@ private:
     ScalarFloat m_alpha_sample;
     Interpolator  m_interpolator;
 
-    MI_TRAVERSE_CB(Base, m_interpolator)
+    MI_TRAVERSE_CB(Base, m_wavelength, m_interpolator)
 };
 
 MI_EXPORT_PLUGIN(MeasuredPolarized)
